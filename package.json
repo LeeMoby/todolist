@@ -11,9 +11,13 @@
     "url": "git+https://github.com/LeeMoby/todolist.git"
   },
   "author": "Moby",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/LeeMoby/todolist/issues"
   },
-  "homepage": "https://github.com/LeeMoby/todolist#readme"
+  "homepage": "https://github.com/LeeMoby/todolist#readme",
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "jquery": "^3.2.1"
+  }
 }
