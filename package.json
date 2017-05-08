@@ -23,5 +23,8 @@
     "require": "^2.4.20",
     "store": "^2.0.4",
     "store.js": "^1.0.4"
+  },
+  "devDependencies": {
+    "webpack": "^2.5.1"
   }
 }
