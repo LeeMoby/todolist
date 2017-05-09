@@ -345,10 +345,10 @@ module.exports = engine.createStore(storages, plugins)
             '<input type="text" name="content" value="' + item.content + '">' +
             '</div>' +
             '<div class="description task-detail-item">' +
-            '<textarea name="detail">' + (item.detail || '') + '</textarea>' +
+            '<textarea name="detail" placeholder="请输入任务详细描述信息...">' + (item.detail || '') + '</textarea>' +
             '</div>' +
             '<div class="remind task-detail-item">' +
-            '<input type="date" value="' + (item.date || '') + '">' +
+            '<input type="date" placeholder="任务截止日期" value="' + (item.date || '') + '">' +
             '</div>' +
             '<div class="task-detail-item">' +
             '<button type="submit">保存</button>' +
