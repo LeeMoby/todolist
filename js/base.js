@@ -7,58 +7,173 @@
     // console.info("jQuery", jQuery); // 测试jQuery是否加载成功
     var store = require('store'); // node_modules/.bin/webpack js/base.js js/base.bundle.js
 
-    var $form_task_add = $('.task-add'), task_list = [];
-
+    var $form_task_add = $('.task-add'),
+        task_list = [],
+        $btn_delete,
+        $btn_detail,
+        $container_mask = $('.container-mask'),
+        $task_detail = $('.task-detail');
 
     init();
 
-    $form_task_add.on('submit', function (e) {
-        var task_new = {}, $task_input = $(this).find('input[name=ipt_task_add]');
-        // 禁用默认提交
-        e.preventDefault();
-        task_new.content = $task_input.val();
-        // 如果为空，则返回
-        if (!task_new.content) return;
-        // 保存new task
-        if (add_task(task_new)) {
-            render_task_list();
-            $task_input.val('');
-        }
-    });
-
+    /**
+     * 新增任务条目
+     * @param task
+     * @returns {boolean}
+     */
     function add_task(task) {
         task_list.push(task);
-        store.set('task_list', task_list);
+        refresh_task_list();
         return true;
     }
 
+    /**
+     * 根据索引删除任务条目
+     * @param index
+     */
+    function delete_task(index) {
+        if (index === undefined || !task_list[index]) return;
+        delete task_list[index];
+        refresh_task_list();
+        render_task_list();
+    }
+
+    /**
+     * 渲染任务列表
+     */
     function render_task_list() {
         var $task_list = $('.task-list');
         $task_list.html('');
         for (var i = 0; i < task_list.length; i++) {
-            var $task = render_task_item(task_list[i]);
+            var $task = render_task_item(task_list[i], i);
             $task_list.append($task);
 
         }
+        // 按钮绑定事件
+        $btn_delete = $('.inner-action.delete');
+        $btn_detail = $('.inner-action.detail');
+        $btn_delete.on('click', function () {
+            var $this = $(this);
+            var $item = $this.parent().parent();
+            if (!confirm('您确定删除吗？')) return;
+            delete_task($item.data('index'));
+
+        });
+        $btn_detail.on('click', function () {
+            var $this = $(this);
+            var $item = $this.parent().parent();
+            render_task_detail($item.data('index'));
+
+        });
     }
 
-    function render_task_item(data) {
+
+    /**
+     * 渲染任务列表条目
+     * @param data
+     * @param index
+     * @returns {*|jQuery|HTMLElement}
+     */
+    function render_task_item(data, index) {
+        if (!data || !index) return;
         var task_item_tpl =
-            '<div class="task-item">' +
+            '<div class="task-item" data-index="' + index + '">' +
             '<span><input type="checkbox"></span>' +
             '<span class="task-content">' + data.content + '</span>' +
             '<span class="inner-action-bar">' +
-            '<span class="inner-action"> 删除 </span>' +
-            '<span class="inner-action"> 详细 </span>' +
+            '<span class="inner-action delete"> 删除 </span>' +
+            '<span class="inner-action detail"> 详细 </span>' +
             '</span>' +
             '</div>';
         return $(task_item_tpl);
 
     }
 
+    /**
+     * 任务数据持久化
+     */
+    function refresh_task_list() {
+        store.set('task_list', task_list);
+    }
+
+    /**
+     * 初始化页面
+     */
     function init() {
         task_list = store.get('task_list') || [];
         if (task_list.length) render_task_list();
+
+        /**
+         * 监听事件，任务新增提交按钮
+         */
+        $form_task_add.on('submit', function (e) {
+            var task_new = {}, $task_input = $(this).find('input[name=ipt_task_add]');
+            // 禁用默认提交
+            e.preventDefault();
+            task_new.content = $task_input.val();
+            // 如果为空，则返回
+            if (!task_new.content) return;
+            // 保存new task
+            if (add_task(task_new)) {
+                render_task_list();
+                $task_input.val('');
+            }
+        });
+    }
+
+    /**
+     * 渲染任务详情页面
+     * @param index
+     */
+    function render_task_detail(index) {
+        if (index === undefined || !task_list[index]) return;
+        var item = task_list[index];
+        $container_mask.show();
+        $task_detail.show();
+        var task_detail_tpl = '<form>' +
+            '<div class="task-detail-item">' +
+            '<div class="content">' + item.content + '</div>' +
+            '<input type="text" name="content" value="' + item.content + '">' +
+            '</div>' +
+            '<div class="description task-detail-item">' +
+            '<textarea name="detail">' + (item.detail || '') + '</textarea>' +
+            '</div>' +
+            '<div class="remind task-detail-item">' +
+            '<input type="date" value="' + (item.date || '') + '">' +
+            '</div>' +
+            '<div class="task-detail-item">' +
+            '<button type="submit">保存</button>' +
+            '</div>' +
+            '</form>';
+        $task_detail.html(task_detail_tpl);
+        $task_detail.find('div[class=content]').show();
+        $task_detail.find('input[name=content]').hide();
+        $container_mask.on('click', function () {
+            $container_mask.hide();
+            $task_detail.hide();
+        });
+        $task_detail.find('form').on('submit', function (e) {
+            e.preventDefault();
+            item.content = $task_detail.find('input[name=content]').val();
+            item.detail = $task_detail.find('textarea[name=detail]').val();
+            item.date = $task_detail.find('input[type=date]').val();
+            console.log(item);
+            update_task_detail(index, item);
+        });
+        $task_detail.find('div[class=content]').on('click', function () {
+
+            $task_detail.find('div[class=content]').hide();
+            $task_detail.find('input[name=content]').show();
+            $task_detail.find('input[name=content]').focus();
+            $task_detail.find('input[name=content]').select();
+        });
+    }
+
+    function update_task_detail(index, data) {
+        if (index === undefined || !data) return;
+        $.merge({}, task_list[index], data);
+        refresh_task_list();
+        render_task_list();
     }
 
 })();
