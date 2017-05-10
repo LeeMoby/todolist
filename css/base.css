@@ -119,7 +119,7 @@ button[type=submit], .task-item {
 }
 
 .task-detail {
-    position: absolute;
+    position: fixed;
     background-color: #fff;
     color: #333;
     width: 400px;

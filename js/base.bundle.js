@@ -382,10 +382,7 @@ module.exports = engine.createStore(storages, plugins)
             $task_detail.find('input[name=content]').focus();
             $task_detail.find('input[name=content]').select();
         });
-        $(window).on('scroll', function (evt) {
-            evt.preventDefault();
-            console.log("scroll");
-        })
+
     }
 
     function update_task_detail(index, data) {
