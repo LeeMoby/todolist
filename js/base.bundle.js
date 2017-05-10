@@ -282,8 +282,7 @@ module.exports = engine.createStore(storages, plugins)
             var $this = $(this);
             var is_complete = $this.is(':checked');
             var index = $this.parent().parent().data('index');
-            task_list[index].complete = is_complete;
-            update_task_detail(index, task_list[index]);
+            update_task_detail(index, {complete: is_complete});
         })
     }
 
@@ -306,7 +305,6 @@ module.exports = engine.createStore(storages, plugins)
             '</span>' +
             '</div>';
         return $(task_item_tpl);
-
     }
 
     /**
@@ -390,18 +388,14 @@ module.exports = engine.createStore(storages, plugins)
             $task_detail.find('input[name=content]').select();
         });
         $task_detail.find('textarea').focus();
-
     }
 
     function update_task_detail(index, data) {
         if (index === undefined || !data) return;
-        $.merge({}, task_list[index], data);
+        $.extend(task_list[index], data);
         refresh_task_list();
         render_task_list();
-
-
     }
-
 })();
 /**
  * (function(){ ... })()
