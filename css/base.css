@@ -115,18 +115,15 @@ button[type=submit], .task-item {
 }
 
 .task-detail, .container-mask {
-    position: absolute;
     display: none;
 }
 
 .task-detail {
+    position: absolute;
     background-color: #fff;
     color: #333;
-    width: 50%;
+    width: 400px;
     height: 280px;
-    padding: 8px;
-    top: 0;
-    right: 0;
     z-index: 1;
     -webkit-box-shadow: 0 0px 3px 3px rgba(0, 0, 0, .5);
     -moz-box-shadow: 0 0px 3px 3px rgba(0, 0, 0, .5);
@@ -144,11 +141,11 @@ button[type=submit], .task-item {
 }
 
 .container-mask {
-    /*position: fixed;*/
-    top: 0px;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     background-color: rgba(30, 30, 30, .5);
     z-index: 0;
 }

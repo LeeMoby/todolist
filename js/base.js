@@ -65,6 +65,10 @@
             render_task_detail($item.data('index'));
 
         });
+        $task_list.find('div[class=task-item]').on('click', function () {
+            var $item = $(this);
+            render_task_detail($item.data('index'));
+        });
     }
 
 
@@ -148,6 +152,10 @@
         $task_detail.html(task_detail_tpl);
         $task_detail.find('div[class=content]').show();
         $task_detail.find('input[name=content]').hide();
+        $task_detail.css({
+            left: ($(window).width() - $task_detail.width()) / 2,
+            top: ($(window).height() - $task_detail.height()) / 2 + $(document.body).scrollTop()
+        });
         $container_mask.on('click', function () {
             $container_mask.hide();
             $task_detail.hide();
@@ -157,16 +165,15 @@
             item.content = $task_detail.find('input[name=content]').val();
             item.detail = $task_detail.find('textarea[name=detail]').val();
             item.date = $task_detail.find('input[type=date]').val();
-            console.log(item);
             update_task_detail(index, item);
         });
         $task_detail.find('div[class=content]').on('click', function () {
-
             $task_detail.find('div[class=content]').hide();
             $task_detail.find('input[name=content]').show();
             $task_detail.find('input[name=content]').focus();
             $task_detail.find('input[name=content]').select();
         });
+
     }
 
     function update_task_detail(index, data) {
