@@ -88,15 +88,15 @@ button[type=submit]:hover {
     color: #333;
 }
 
-button[type=submit], .task-item {
+button[type=submit], .task-item, .task-complete-btn {
     -webkit-box-shadow: 0 4px 4px rgba(0, 0, 0, .5);
     -moz-box-shadow: 0 4px 4px rgba(0, 0, 0, .5);
     box-shadow: 0 4px 4px rgba(0, 0, 0, .5);
     cursor: pointer;
 }
 
-.task-list {
-    margin: 12px 0;
+.task-list, .task-list-complete, .task-list-middle {
+    margin: 12px auto;
 }
 
 .task-item {
@@ -122,12 +122,12 @@ button[type=submit], .task-item {
     position: fixed;
     background-color: #fff;
     color: #333;
-    width: 400px;
+    width: 350px;
     height: 280px;
     z-index: 1;
-    -webkit-box-shadow: 0 0px 3px 3px rgba(0, 0, 0, .5);
-    -moz-box-shadow: 0 0px 3px 3px rgba(0, 0, 0, .5);
-    box-shadow: 0 0px 3px 3px rgba(0, 0, 0, .5);
+    -webkit-box-shadow: 0 0 3px 3px rgba(0, 0, 0, .5);
+    -moz-box-shadow: 0 0 3px 3px rgba(0, 0, 0, .5);
+    box-shadow: 0 0 3px 3px rgba(0, 0, 0, .5);
 }
 
 .task-detail .content {
@@ -164,3 +164,14 @@ button[type=submit], .task-item {
     color: #333;
 
 }
+
+.task-complete-btn {
+    position: relative;
+    margin: 0 auto;
+    background-color: #bbbbbb;
+}
+
+.task-complete-btn:hover {
+    background-color: #eeeeee;
+}
+

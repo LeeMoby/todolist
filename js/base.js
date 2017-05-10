@@ -11,8 +11,13 @@
         task_list = [],
         $btn_delete,
         $btn_detail,
+        $container = $('container'),
         $container_mask = $('.container-mask'),
-        $task_detail = $('.task-detail');
+        $task_detail = $('.task-detail'),
+        $task_list = $('.task-list'),
+        $task_list_complete = $('.task-list-complete'),
+        $task_complete_btn = $('.task-complete-btn'),
+        isShowComplete = false;
 
     init();
 
@@ -42,12 +47,16 @@
      * 渲染任务列表
      */
     function render_task_list() {
-        var $task_list = $('.task-list');
         $task_list.html('');
+        $task_list_complete.html('');
         for (var i = 0; i < task_list.length; i++) {
+            if (!task_list[i]) continue;
             var $task = render_task_item(task_list[i], i);
-            $task_list.append($task);
-
+            if (task_list[i].complete) {
+                $task_list_complete.append($task);
+            } else {
+                $task_list.append($task);
+            }
         }
         // 按钮绑定事件
         $btn_delete = $('.inner-action.delete');
@@ -74,7 +83,19 @@
             var is_complete = $this.is(':checked');
             var index = $this.parent().parent().data('index');
             update_task_detail(index, {complete: is_complete});
-        })
+            render_task_list();
+        });
+        $task_list_complete.find('div[class=task-item]').on('dblclick', function () {
+            var $item = $(this);
+            render_task_detail($item.data('index'));
+        });
+        $task_list_complete.find('div[class=task-item] input[type=checkbox]').on('change', function (evt) {
+            var $this = $(this);
+            var is_complete = $this.is(':checked');
+            var index = $this.parent().parent().data('index');
+            update_task_detail(index, {complete: is_complete});
+            render_task_list();
+        });
     }
 
 
@@ -128,6 +149,15 @@
                 $task_input.val('');
             }
         });
+
+        $task_complete_btn.on('click', function (evt) {
+            isShowComplete = !isShowComplete;
+            var $this = $(this);
+            $this.text((isShowComplete ? "隐藏" : "显示") + "已完成");
+            changeCompleteShowStatus(isShowComplete);
+        });
+
+        changeCompleteShowStatus(isShowComplete);
     }
 
     /**
@@ -186,6 +216,10 @@
         $.extend(task_list[index], data);
         refresh_task_list();
         render_task_list();
+    }
+
+    function changeCompleteShowStatus(isShowComplete) {
+        isShowComplete ? $task_list_complete.show() : $task_list_complete.hide();
     }
 })();
 /**
