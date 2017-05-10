@@ -65,10 +65,17 @@
             render_task_detail($item.data('index'));
 
         });
-        $task_list.find('div[class=task-item]').on('click', function () {
+        $task_list.find('div[class=task-item]').on('dblclick', function () {
             var $item = $(this);
             render_task_detail($item.data('index'));
         });
+        $task_list.find('div[class=task-item] input[type=checkbox]').on('change', function (evt) {
+            var $this = $(this);
+            var is_complete = $this.is(':checked');
+            var index = $this.parent().parent().data('index');
+            task_list[index].complete = is_complete;
+            update_task_detail(index, task_list[index]);
+        })
     }
 
 
@@ -82,7 +89,7 @@
         if (!data || !index) return;
         var task_item_tpl =
             '<div class="task-item" data-index="' + index + '">' +
-            '<span><input type="checkbox"></span>' +
+            '<span><input type="checkbox" ' + (data.complete ? "checked" : "") + '></span>' +
             '<span class="task-content">' + data.content + '</span>' +
             '<span class="inner-action-bar">' +
             '<span class="inner-action delete"> 删除 </span>' +
@@ -173,6 +180,7 @@
             $task_detail.find('input[name=content]').focus();
             $task_detail.find('input[name=content]').select();
         });
+        $task_detail.find('textarea').focus();
 
     }
 
@@ -181,6 +189,8 @@
         $.merge({}, task_list[index], data);
         refresh_task_list();
         render_task_list();
+
+
     }
 
 })();
