@@ -11,7 +11,6 @@
         task_list = [],
         $btn_delete,
         $btn_detail,
-        $container = $('container'),
         $container_mask = $('.container-mask'),
         $task_detail = $('.task-detail'),
         $task_list = $('.task-list'),
@@ -53,6 +52,7 @@
             if (!task_list[i]) continue;
             var $task = render_task_item(task_list[i], i);
             if (task_list[i].complete) {
+                $task.addClass('task-complete');
                 $task_list_complete.append($task);
             } else {
                 $task_list.append($task);
@@ -74,22 +74,22 @@
             render_task_detail($item.data('index'));
 
         });
-        $task_list.find('div[class=task-item]').on('dblclick', function () {
+        $task_list.find('div[name=taskItem]').on('dblclick', function () {
             var $item = $(this);
             render_task_detail($item.data('index'));
         });
-        $task_list.find('div[class=task-item] input[type=checkbox]').on('change', function (evt) {
+        $task_list.find('div[name=taskItem] input[type=checkbox]').on('change', function (evt) {
             var $this = $(this);
             var is_complete = $this.is(':checked');
             var index = $this.parent().parent().data('index');
             update_task_detail(index, {complete: is_complete});
             render_task_list();
         });
-        $task_list_complete.find('div[class=task-item]').on('dblclick', function () {
+        $task_list_complete.find('div[name=taskItem]').on('dblclick', function () {
             var $item = $(this);
             render_task_detail($item.data('index'));
         });
-        $task_list_complete.find('div[class=task-item] input[type=checkbox]').on('change', function (evt) {
+        $task_list_complete.find('div[name=taskItem] input[type=checkbox]').on('change', function (evt) {
             var $this = $(this);
             var is_complete = $this.is(':checked');
             var index = $this.parent().parent().data('index');
@@ -108,7 +108,7 @@
     function render_task_item(data, index) {
         if (!data || !index) return;
         var task_item_tpl =
-            '<div class="task-item" data-index="' + index + '">' +
+            '<div class="task-item" name="taskItem" data-index="' + index + '">' +
             '<span><input type="checkbox" ' + (data.complete ? "checked" : "") + '></span>' +
             '<span class="task-content">' + data.content + '</span>' +
             '<span class="inner-action-bar">' +
