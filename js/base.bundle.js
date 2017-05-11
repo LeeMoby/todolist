@@ -215,6 +215,7 @@ module.exports = engine.createStore(storages, plugins)
     // console.info("$", $); // 测试jQuery是否加载成功
     // console.info("jQuery", jQuery); // 测试jQuery是否加载成功
     var store = __webpack_require__(1); // node_modules/.bin/webpack js/base.js js/base.bundle.js
+    $.datetimepicker.setLocale('zh');
 
     var $form_task_add = $('.task-add'),
         task_list = [],
@@ -367,6 +368,7 @@ module.exports = engine.createStore(storages, plugins)
         });
 
         changeCompleteShowStatus(isShowComplete);
+        check_task_remind();
     }
 
     /**
@@ -387,7 +389,8 @@ module.exports = engine.createStore(storages, plugins)
             '<textarea name="detail" placeholder="请输入任务详细描述信息...">' + (item.detail || '') + '</textarea>' +
             '</div>' +
             '<div class="remind task-detail-item">' +
-            '<input type="date" value="' + (item.date || '') + '">' +
+            '<lable>提醒时间</lable>' +
+            '<input class="datetime" type="text" value="' + (item.date || '') + '">' +
             '</div>' +
             '<div class="task-detail-item">' +
             '<button type="submit">保存</button>' +
@@ -400,6 +403,7 @@ module.exports = engine.createStore(storages, plugins)
             left: ($(window).width() - $task_detail.width()) / 2,
             top: ($(window).height() - $task_detail.height()) / 2 + $(document.body).scrollTop()
         });
+        $task_detail.find('input[class=datetime]').datetimepicker();
         $container_mask.on('click', function () {
             $container_mask.hide();
             $task_detail.hide();
@@ -408,7 +412,7 @@ module.exports = engine.createStore(storages, plugins)
             e.preventDefault();
             item.content = $task_detail.find('input[name=content]').val();
             item.detail = $task_detail.find('textarea[name=detail]').val();
-            item.date = $task_detail.find('input[type=date]').val();
+            item.date = $task_detail.find('input[class=datetime]').val();
             update_task_detail(index, item);
         });
         $task_detail.find('div[class=content]').on('click', function () {
@@ -429,6 +433,18 @@ module.exports = engine.createStore(storages, plugins)
 
     function changeCompleteShowStatus(isShowComplete) {
         isShowComplete ? $task_list_complete.show() : $task_list_complete.hide();
+    }
+
+    function check_task_remind(){
+        var current_timestamp;
+        for(var i = 0; i < task_list.length; i++) {
+            if (!task_list[i] || !task_list[i].date) continue;
+            var item = task_list[i], task_timestamp;
+            current_timestamp = (new Date()).getTime();
+            task_timestamp = (new Date(item.date)).getTime();
+            console.log(current_timestamp);
+            console.log(task_timestamp);
+        }
     }
 })();
 /**
