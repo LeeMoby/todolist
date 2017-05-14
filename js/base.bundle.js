@@ -435,17 +435,29 @@ module.exports = engine.createStore(storages, plugins)
         isShowComplete ? $task_list_complete.show() : $task_list_complete.hide();
     }
 
-    function check_task_remind(){
+    function check_task_remind() {
         var current_timestamp;
-        for(var i = 0; i < task_list.length; i++) {
-            if (!task_list[i] || !task_list[i].date) continue;
-            var item = task_list[i], task_timestamp;
-            current_timestamp = (new Date()).getTime();
-            task_timestamp = (new Date(item.date)).getTime();
-            console.log(current_timestamp);
-            console.log(task_timestamp);
-        }
+        var itl = setInterval(function () {
+            for (var i = 0; i < task_list.length; i++) {
+                if (!task_list[i] || !task_list[i].date) continue;
+                var item = task_list[i], task_timestamp;
+                current_timestamp = (new Date()).getTime();
+                task_timestamp = (new Date(item.date)).getTime();
+                console.log(new Date().getHours() + ":" + new Date().getMinutes());
+                if (task_timestamp > current_timestamp && task_timestamp - current_timestamp <= 300000 ) { // 提前5分钟（5 * 60 * 1000ms）开始提醒
+                    notify_task_remind(item.content);
+                }
+            }
+        }, 60000); // 每分钟(60 * 1000ms)检查一次任务提醒
+
     }
+
+    function notify_task_remind(content) {
+
+        console.info(content);
+    }
+
+
 })();
 /**
  * (function(){ ... })()
